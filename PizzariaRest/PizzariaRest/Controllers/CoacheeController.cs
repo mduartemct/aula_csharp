@@ -44,27 +44,34 @@ namespace PizzariaRest.Controllers
 
         // POST api/<CoacheeController>
         [HttpPost]
-        public ActionResult<Coachee> Post([FromBody] Coachee value)
+        public IActionResult Post([FromBody] Coachee value)
         {
             try
             {
                 if (string.IsNullOrEmpty(value.Name))
                 {
-                    throw new SystemException("Name Nao Pode ser Nulo/Vazio");
+                    return Ok("Erro na criação do Coachee");
+                    //return BadRequest("Name Nao Pode ser Nulo / Vazio");
+                    //throw new SystemException("Name Nao Pode ser Nulo/Vazio");
                 }
                 var ret = CoacheeMock.CreateCoachee(value.Name, value.Gender, value.Email);
                 if (string.IsNullOrEmpty(ret.Id))
                 {
-                    throw new SystemException("Erro na criação do Coachee");
+                    return NotFound("Erro na criação do Coachee");
+                    // throw new SystemException("Erro na criação do Coachee");
                 }
 
-                return CreatedAtAction("Post", "Coachee.Id = " + ret.Id);
+                //var result = new CreatedAtActionResult("Post", "coachee", "", new { message = "201 Created", Id = ret.Id });
+                //return result;
+                //return Created(Get,ret.Id);
+                return new OkObjectResult(ret);
             }
             catch (Exception ex)
             {
 
                 //return CreatedAtAction("PostError", null);
                 return BadRequest(ex.Message);
+                //throw;
             }
         }
 
