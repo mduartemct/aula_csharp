@@ -1,8 +1,11 @@
 ﻿using System;
+using PizzariaRest.Interfaces;
+
 namespace PizzariaRest.Models
 {
-    public class Coachee
+    public class Coachee : IModel
     {
+        //Implementacao da Interface
         public string Id { get; set; }
 
         public string Name { get; set; }
