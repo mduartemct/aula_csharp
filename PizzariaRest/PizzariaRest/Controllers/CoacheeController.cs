@@ -13,52 +13,73 @@ namespace PizzariaRest.Controllers
     [ApiController]
     public class CoacheeController : ControllerBase
     {
-        // GET: api/Cocahee
+        // GET: api/<CoacheeController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public List<Coachee> Get()
         {
-            return new string[] { "value1", "value2" };
+            return CoacheeMock.ReadCoachees().ToList();
         }
 
-        // GET: api/Cocahee/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
+        // GET api/<CoacheeController>/5
+        [HttpGet("{id}")]
+        public ActionResult<Coachee> Get(string id)
         {
-            return "value";
+            try
+            {
+                var ret = CoacheeMock.ReadCoachee(id);
+
+                return Ok(ret);
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.Contains("404"))
+                {
+                    return NotFound();
+                }
+                return BadRequest(ex.Message);
+
+            }
+
         }
 
-        // POST: api/Cocahee
+        // POST api/<CoacheeController>
         [HttpPost]
         public ActionResult<Coachee> Post([FromBody] Coachee value)
         {
             try
             {
-                var ret = CoacheeMock.CreateCoachee(value.Name, value.Gender);
+                if (string.IsNullOrEmpty(value.Name))
+                {
+                    throw new SystemException("Name Nao Pode ser Nulo/Vazio");
+                }
+                var ret = CoacheeMock.CreateCoachee(value.Name, value.Gender, value.Email);
                 if (string.IsNullOrEmpty(ret.Id))
                 {
-                    throw new SystemException("Erro na Criação do Coachee");
+                    throw new SystemException("Erro na criação do Coachee");
                 }
-                return CreatedAtAction("Post", ret.Id);
-            }
-            catch (Exception)
-            {
-                //return CreatedAtAction("PostError", null);
-                return BadRequest(value);
-            }
 
-            //return ret;
+                return CreatedAtAction("Post", "Coachee.Id = " + ret.Id);
+            }
+            catch (Exception ex)
+            {
+
+                //return CreatedAtAction("PostError", null);
+                return BadRequest(ex.Message);
+            }
         }
 
-        // PUT: api/Cocahee/5
+        // PUT api/<CoacheeController>/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {
         }
 
-        // DELETE: api/Cocahee/5
+        // DELETE api/<CoacheeController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public void Delete(string id)
         {
+            var ret = CoacheeMock.DeleteCoachee(id);
+            if (!ret) throw new SystemException("Coachee não existe");
         }
     }
 }
