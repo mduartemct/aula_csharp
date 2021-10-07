@@ -34,9 +34,16 @@ namespace PizzariaRest
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
-            }
+                //Comente a linha abaixo se quiser mostrar um erro por inteiro 
+                app.UseExceptionHandler("/error");
 
+                //Descomente a linha abaixo se quiser mostrar um erro por inteiro 
+                //app.UseExceptionHandler("/error-local-development");
+            }
+            else
+            {
+                app.UseExceptionHandler("/error");
+            }
 
 
             app.UseHttpsRedirection();

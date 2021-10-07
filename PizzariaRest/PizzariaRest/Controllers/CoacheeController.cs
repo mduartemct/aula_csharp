@@ -93,6 +93,11 @@ namespace PizzariaRest.Controllers
         [HttpPut("{id}")]
         public ActionResult Put(string id, [FromBody] Coachee value)
         {
+            if (id.Contains("171"))
+            {
+                throw new ArgumentException($"Id de malandro....Passa o Id correto animal!", nameof(value));
+            }
+
 
             var ret = CoacheeMock.UpdateCoachee(id, value);
             if (!ret)
