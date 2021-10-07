@@ -22,6 +22,20 @@ namespace PizzariaRest.Mocks
             return coachee;
         }
 
+        public static Coachee CreateCoachee(Coachee item)
+        {
+            Coachee coachee = new Coachee
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = item.Name,
+                Gender = item.Gender,
+                Email = item.Email
+            };
+            coacheeList.Add(coachee);
+
+            return coachee;
+        }
+
         public static Coachee ReadCoachee(string id)
         {
             var ret = coacheeList.Where(xpto => xpto.Id == id).FirstOrDefault();
@@ -47,6 +61,20 @@ namespace PizzariaRest.Mocks
             }
             coacheeList.Remove(existCoachee);
             return true;
+        }
+
+        public static bool UpdateCoachee(string id, Coachee item)
+        {
+            var existCoachee = ReadCoachee(id);
+            if (existCoachee == null)
+                return false;
+
+            existCoachee.Email = item.Email;
+            existCoachee.Gender = item.Gender;
+            existCoachee.Name = item.Name;
+
+            return true;
+
         }
 
 

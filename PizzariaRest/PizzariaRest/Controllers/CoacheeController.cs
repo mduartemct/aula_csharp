@@ -9,15 +9,28 @@ using PizzariaRest.Mocks;
 
 namespace PizzariaRest.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class CoacheeController : ControllerBase
     {
         // GET: api/<CoacheeController>
         [HttpGet]
-        public List<Coachee> Get()
+        public ActionResult<List<Coachee>> Get()
         {
-            return CoacheeMock.ReadCoachees().ToList();
+            try
+            {
+                List<Coachee> result = CoacheeMock.ReadCoachees().ToList();
+                if (result.Count == 0)
+                {
+                    return StatusCode(204);
+                }
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500);
+            }
+
         }
 
         // GET api/<CoacheeController>/5
@@ -50,8 +63,8 @@ namespace PizzariaRest.Controllers
             {
                 if (string.IsNullOrEmpty(value.Name))
                 {
-                    return Ok("Erro na criação do Coachee");
-                    //return BadRequest("Name Nao Pode ser Nulo / Vazio");
+                    //return Ok("Erro na criação do Coachee");
+                    return BadRequest("Name Nao Pode ser Nulo / Vazio");
                     //throw new SystemException("Name Nao Pode ser Nulo/Vazio");
                 }
                 var ret = CoacheeMock.CreateCoachee(value.Name, value.Gender, value.Email);
@@ -64,6 +77,7 @@ namespace PizzariaRest.Controllers
                 //var result = new CreatedAtActionResult("Post", "coachee", "", new { message = "201 Created", Id = ret.Id });
                 //return result;
                 //return Created(Get,ret.Id);
+                //return CreatedAtAction(nameof(Get), new { id = ret.Id }, ret);
                 return new OkObjectResult(ret);
             }
             catch (Exception ex)
@@ -77,16 +91,27 @@ namespace PizzariaRest.Controllers
 
         // PUT api/<CoacheeController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public ActionResult Put(string id, [FromBody] Coachee value)
         {
+
+            var ret = CoacheeMock.UpdateCoachee(id, value);
+            if (!ret)
+            {
+                return StatusCode(422);
+            }
+            return StatusCode(204);
         }
 
         // DELETE api/<CoacheeController>/5
         [HttpDelete("{id}")]
-        public void Delete(string id)
+        public ActionResult Delete(string id)
         {
             var ret = CoacheeMock.DeleteCoachee(id);
-            if (!ret) throw new SystemException("Coachee não existe");
+            if (!ret)
+                return StatusCode(422);
+
+            return StatusCode(204);
+
         }
     }
 }
