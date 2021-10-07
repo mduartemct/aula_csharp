@@ -37,6 +37,8 @@ namespace PizzariaRest
                 app.UseDeveloperExceptionPage();
             }
 
+
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
