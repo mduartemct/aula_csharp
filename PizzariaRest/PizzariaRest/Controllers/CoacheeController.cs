@@ -26,7 +26,7 @@ namespace PizzariaRest.Controllers
                 }
                 return Ok(result);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return StatusCode(500);
             }
